@@ -1,4 +1,3 @@
-import time
 import telebot
 import random
 from flask import Flask
@@ -138,6 +137,10 @@ def show_verification_message_step2(call):
     bot.send_message(call.message.chat.id, f"`{message}`", parse_mode="Markdown")
     bot.send_message(call.message.chat.id, "*Please copy and send the exact message below in this chat to proceed 👇*",parse_mode="Markdown")
     bot.answer_callback_query(call.id) 
+
+def keep_alive():
+    t = threading.Thread(target=run_flask, daemon=True)
+    t.start()
 
 def main():
     try:
