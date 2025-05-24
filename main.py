@@ -1,6 +1,21 @@
 import telebot
 import random
- 
+from flask import Flask
+import threading
+import logging
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "I am alive"
+
+def run_flask():
+    try:
+        app.run(host='0.0.0.0', port=8085)
+    except Exception as e:
+        logging.error(f"Error in Flask server: {e}")
+
 bot = telebot.TeleBot("7350867799:AAFznjxNdP-LyaWVt4f0mCXR62DfTIQH-94")
  
 with open("message1.txt", "r", encoding="utf-8") as f:
@@ -121,6 +136,16 @@ def show_verification_message_step2(call):
     message = user_steps[user_id]['expected']
     bot.send_message(call.message.chat.id, f"`{message}`", parse_mode="Markdown")
     bot.send_message(call.message.chat.id, "*Please copy and send the exact message below in this chat to proceed 👇*",parse_mode="Markdown")
-    bot.answer_callback_query(call.id)
- 
-bot.polling()
+    bot.answer_callback_query(call.id) 
+
+def main():
+    try:
+        keep_alive()
+        bot.polling(none_stop=True, timeout=60)
+    except Exception as e:
+        logging.error(f"Error in main bot polling loop: {e}")
+        time.sleep(5)
+        main()
+
+if __name__ == "__main__":
+    main()
