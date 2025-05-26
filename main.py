@@ -17,9 +17,6 @@ def run_flask():
     except Exception as e:
         logging.error(f"Error in Flask server: {e}")
 
-# Start Flask in background
-threading.Thread(target=run_flask).start()
-
 bot = telebot.TeleBot("7350867799:AAFznjxNdP-LyaWVt4f0mCXR62DfTIQH-94")
 
 with open("message1.txt", "r", encoding="utf-8") as f:
@@ -154,7 +151,8 @@ def handle_final_claim(call):
     bot.answer_callback_query(call.id, "Please invite 5 friends to claim your reward.", show_alert=True)
 
 def keep_alive():
-    run_flask()
+    t = threading.Thread(target=run_flask, daemon=True)
+    t.start()
 
 def main():
     try:
